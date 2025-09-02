@@ -1,22 +1,29 @@
 from flask import Flask, request, jsonify, send_from_directory
-import mysql.connector
 from flask_bcrypt import Bcrypt
+from flask_cors import CORS
+import mysql.connector
+import os
 
 app = Flask(__name__, static_folder='static', static_url_path='')
 bcrypt = Bcrypt(app)
+CORS(app) # Enable CORS for all routes
 
-# Database connection details
+# Database connection details from environment variables
 db_config = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': 'Tomosori6308.', 
-    'database': 'mood_tracker_db'
+    'host': os.environ.get('DB_HOST'),
+    'user': os.environ.get('DB_USER'),
+    'password': os.environ.get('DB_PASSWORD'),
+    'database': os.environ.get('DB_NAME')
 }
 
 # --- Utility Functions ---
 def get_db_connection():
     """Establishes a connection to the database."""
-    return mysql.connector.connect(**db_config)
+    try:
+        return mysql.connector.connect(**db_config)
+    except mysql.connector.Error as err:
+        print(f"Error connecting to database: {err}")
+        return None
 
 # --- API Routes ---
 @app.route('/api/register', methods=['POST'])
@@ -32,6 +39,9 @@ def register():
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     conn = get_db_connection()
+    if conn is None:
+        return jsonify({'message': 'Failed to connect to the database'}), 500
+    
     cursor = conn.cursor()
 
     try:
@@ -62,6 +72,9 @@ def login():
         return jsonify({'message': 'Username and password are required'}), 400
 
     conn = get_db_connection()
+    if conn is None:
+        return jsonify({'message': 'Failed to connect to the database'}), 500
+    
     cursor = conn.cursor(dictionary=True)
 
     try:
@@ -85,6 +98,3 @@ def serve_index():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
-    
-
-    
