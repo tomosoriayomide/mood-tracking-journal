@@ -81,7 +81,7 @@ def login():
 # Route to serve the main HTML page
 @app.route('/')
 def serve_index():
-    return send_from_directory(app.static_folder, 'index.html')
+    return send_from_directory(app.static_folder, 'login.html')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

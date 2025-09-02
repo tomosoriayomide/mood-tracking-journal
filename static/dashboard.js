@@ -165,5 +165,5 @@ document.getElementById("logout-button").addEventListener("click", () => {
   localStorage.removeItem("userPlan");
 
   // Redirect to login page
-  window.location.href = "/index.html";
+  window.location.href = "/login.html";
 });
