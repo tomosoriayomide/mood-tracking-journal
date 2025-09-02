@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = document.getElementById("login-password").value;
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/login", {
+      const response = await fetch("https://mood-tracking-journal-kappa.vercel.app/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = document.getElementById("register-password").value;
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/register", {
+      const response = await fetch("https://mood-tracking-journal-kappa.vercel.app/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -90,11 +90,14 @@ loginForm.addEventListener('submit', async (e) => {
     const password = document.getElementById('login-password').value;
 
     try {
-        const response = await fetch('http://127.0.0.1:5000/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
+        const response = await fetch(
+          "https://mood-tracking-journal-kappa.vercel.app/api/login",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+          }
+        );
 
         const result = await response.json();
         

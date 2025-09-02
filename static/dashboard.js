@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = document.getElementById("login-password").value;
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/login", {
+      const response = await fetch("https://mood-tracking-journal-kappa.vercel.app/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = document.getElementById("register-password").value;
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/register", {
+      const response = await fetch("https://mood-tracking-journal-kappa.vercel.app/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const content = document.getElementById("journal-entry").value;
 
     const countRes = await fetch(
-      `http://127.0.0.1:5000/api/entries_today?user_id=${userId}`
+      `https://mood-tracking-journal-kappa.vercel.app/api/entries_today?user_id=${userId}`
     );
     const { count } = await countRes.json();
 
@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const res = await fetch("http://127.0.0.1:5000/api/log_mood", {
+    const res = await fetch("https://mood-tracking-journal-kappa.vercel.app/api/log_mood", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user_id: userId, mood, content }),
@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("upgrade-button")
     .addEventListener("click", async () => {
-      const res = await fetch("http://127.0.0.1:5000/api/simulate_payment", {
+      const res = await fetch("https://mood-tracking-journal-kappa.vercel.app/api/simulate_payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id: userId }),
@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function renderMoodChart() {
     const res = await fetch(
-      `http://127.0.0.1:5000/api/mood_summary?user_id=${userId}`
+      `https://mood-tracking-journal-kappa.vercel.app/api/mood_summary?user_id=${userId}`
     );
     const data = await res.json();
 
