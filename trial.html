@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Journal Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
+
+    <!-- Main Dashboard Container -->
+    <div class="w-full max-w-4xl bg-white p-6 md:p-10 rounded-xl shadow-lg">
+
+        <!-- Header Section -->
+        <header class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Welcome Back!</h1>
+            <p class="text-lg text-gray-600">Your mood journal is waiting.</p>
+            <div id="userIdDisplay" class="text-sm text-gray-400 mt-2 hidden"></div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Journal Entry Card -->
+            <div class="bg-indigo-50 p-6 rounded-lg shadow-inner">
+                <h2 class="text-xl font-semibold text-indigo-700 mb-3">Today's Entry</h2>
+                <textarea 
+                    id="journalEntryInput"
+                    class="w-full h-32 p-3 text-gray-700 border border-indigo-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="How are you feeling today?"
+                ></textarea>
+                <div id="limitStatus" class="text-sm mt-2 text-gray-500"></div>
+                <div class="flex justify-end mt-4">
+                    <button id="saveButton" class="px-6 py-2 bg-indigo-600 text-white font-medium rounded-full hover:bg-indigo-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        Save Entry
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mood Summary Card -->
+            <div class="bg-green-50 p-6 rounded-lg shadow-inner">
+                <h2 class="text-xl font-semibold text-green-700 mb-3">Your Past Entries</h2>
+                <div id="entriesList" class="h-32 overflow-y-auto">
+                    <!-- Entries will be loaded here -->
+                    <p class="text-gray-500 italic text-sm">Loading your journal entries...</p>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button id="viewHistoryButton" class="px-6 py-2 bg-green-600 text-white font-medium rounded-full hover:bg-green-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        View History
+                    </button>
+                </div>
+            </div>
+
+            <!-- Freemium Plan Section -->
+            <div class="md:col-span-2 bg-gray-50 p-6 rounded-lg shadow-inner">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Choose Your Plan</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    
+                    <!-- Free Plan Card -->
+                    <div id="freePlanCard" class="bg-white p-6 rounded-lg border-2 border-green-500 shadow-md transform transition-all hover:scale-105">
+                        <h3 class="text-lg font-bold text-green-700 mb-2">Free Plan</h3>
+                        <p class="text-sm text-gray-500">Perfect for getting started.</p>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2 mt-4">
+                            <li>Limited daily journal entries (2 per day)</li>
+                            <li>Basic mood tracking</li>
+                            <li>Weekly mood reports</li>
+                        </ul>
+                        <p class="text-center text-green-600 font-bold text-2xl mt-4">Free</p>
+                    </div>
+
+                    <!-- Premium Plan Card -->
+                    <div id="premiumPlanCard" class="bg-indigo-600 p-6 rounded-lg border-2 border-indigo-700 text-white shadow-md transform transition-all hover:scale-105">
+                        <h3 class="text-lg font-bold mb-2">Premium Plan</h3>
+                        <p class="text-sm">Unlock advanced features for better insights.</p>
+                        <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li>Unlimited journal entries</li>
+                            <li>Advanced mood analytics</li>
+                            <li>Monthly and yearly reports</li>
+                            <li>Access to guided exercises</li>
+                        </ul>
+                        <div id="upgradeButtonContainer" class="flex flex-col items-center mt-4">
+                            <p class="font-bold text-2xl mb-2">$9.99<span class="text-sm text-gray-200">/month</span></p>
+                            <button id="upgradeButton" class="w-full py-2 bg-white text-indigo-600 font-bold rounded-full hover:bg-gray-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white">
+                                Upgrade Now
+                            </button>
+                        </div>
+                        <p id="premiumStatus" class="hidden text-center font-bold text-lg mt-4">✅ Premium Plan Activated</p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- Custom Message Box for upgrade confirmation -->
+    <div id="messageBox" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full transform transition-all">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Upgrade to Premium</h3>
+            <p class="text-gray-600 mb-6">Thank you for your interest! This would normally take you to a secure payment page. For this demo, your account has been upgraded.</p>
+            <div class="flex justify-end">
+                <button id="closeButton" class="px-6 py-2 bg-indigo-600 text-white font-medium rounded-full hover:bg-indigo-700 transition-colors duration-200">
+                    Got it
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK Imports -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, setDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+// Global variables provided by the environment
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+// Emoji map for display
+const moodEmojis = {
+    'happy': '&#128578;',
+    'calm': '&#128522;',
+    'neutral': '&#128528;',
+    'sad': '&#128543;',
+    'angry': '&#128545;'
+};
+
+// Wait for the DOM to be fully loaded before running the script
+document.addEventListener('DOMContentLoaded', () => {
+
+    // Firebase Initialization
+    let app;
+    let auth;
+    let db;
+    let userId;
+    let userPlan = 'free'; // Default plan
+
+    try {
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+        
+        // Use custom token for authentication if provided, otherwise sign in anonymously
+        if (initialAuthToken) {
+            signInWithCustomToken(auth, initialAuthToken).then((userCredential) => {
+                userId = userCredential.user.uid;
+                console.log("Signed in with custom token. User ID:", userId);
+                document.getElementById('userIdDisplay').textContent = `User ID: ${userId}`;
+                document.getElementById('userIdDisplay').classList.remove('hidden');
+                setupFirestoreListeners();
+            }).catch((error) => {
+                console.error("Error signing in with custom token:", error);
+                signInAnonymously(auth).then(() => {
+                    userId = auth.currentUser.uid;
+                    console.log("Signed in anonymously. User ID:", userId);
+                    document.getElementById('userIdDisplay').textContent = `User ID: ${userId}`;
+                    document.getElementById('userIdDisplay').classList.remove('hidden');
+                    setupFirestoreListeners();
+                });
+            });
+        } else {
+            signInAnonymously(auth).then(() => {
+                userId = auth.currentUser.uid;
+                console.log("Signed in anonymously. User ID:", userId);
+                document.getElementById('userIdDisplay').textContent = `User ID: ${userId}`;
+                document.getElementById('userIdDisplay').classList.remove('hidden');
+                setupFirestoreListeners();
+            });
+        }
+
+    } catch (error) {
+        console.error("Error initializing Firebase:", error);
+    }
+
+    // Get the UI elements
+    const saveButton = document.getElementById('saveButton');
+    const journalEntryInput = document.getElementById('journalEntryInput');
+    const entriesList = document.getElementById('entriesList');
+    const upgradeButton = document.getElementById('upgradeButton');
+    const messageBox = document.getElementById('messageBox');
+    const closeButton = document.getElementById('closeButton');
+    const upgradeButtonContainer = document.getElementById('upgradeButtonContainer');
+    const premiumStatus = document.getElementById('premiumStatus');
+    const freePlanCard = document.getElementById('freePlanCard');
+    const premiumPlanCard = document.getElementById('premiumPlanCard');
+    const limitStatus = document.getElementById('limitStatus');
+    const moodButtons = document.querySelectorAll('.mood-button');
+
+    let selectedMood = null;
+
+    // Add event listeners for mood selection
+    moodButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove 'selected' class from all buttons
+            moodButtons.forEach(btn => btn.classList.remove('selected'));
+            // Add 'selected' class to the clicked button
+            button.classList.add('selected');
+            selectedMood = button.dataset.mood;
+            console.log("Selected mood:", selectedMood);
+        });
+    });
+
+    // Firestore data listeners (real-time updates)
+    function setupFirestoreListeners() {
+        const userDocRef = doc(db, `/artifacts/${appId}/users/${userId}`);
+        const entriesCollectionRef = collection(db, `/artifacts/${appId}/users/${userId}/entries`);
+        const q = query(entriesCollectionRef);
+
+        // Listen for user plan changes
+        onSnapshot(userDocRef, (userDoc) => {
+            if (userDoc.exists()) {
+                userPlan = userDoc.data().plan || 'free';
+            } else {
+                // If user doc doesn't exist, create it with a default plan
+                setDoc(userDocRef, { plan: 'free' });
+            }
+            updateUIForPlan();
+        }, (error) => {
+            console.error("Error getting user document:", error);
+        });
+
+        // Listen for entries changes
+        onSnapshot(q, (querySnapshot) => {
+            entriesList.innerHTML = ''; // Clear the list
+            if (querySnapshot.empty) {
+                entriesList.innerHTML = `<p class="loading-message">No entries yet. Log your first mood!</p>`;
+            } else {
+                querySnapshot.forEach((doc) => {
+                    const entryData = doc.data();
+                    const entryDiv = document.createElement('div');
+                    entryDiv.classList.add('entry-item');
+                    const emoji = moodEmojis[entryData.mood] || ''; // Get the emoji for the mood
+                    entryDiv.innerHTML = `
+                        <div class="entry-content">
+                            <span class="emoji">${emoji}</span>
+                            <p class="entry-text">${entryData.content}</p>
+                        </div>
+                        <p class="entry-date">${entryData.createdAt ? new Date(entryData.createdAt.seconds * 1000).toLocaleString() : 'Just now'}</p>
+                    `;
+                    entriesList.prepend(entryDiv); // Add newest entry to the top
+                });
+            }
+        }, (error) => {
+            console.error("Error getting snapshot:", error);
+            entriesList.innerHTML = `<p class="loading-message" style="color: #ef4444">Error loading entries.</p>`;
+        });
+    }
+
+    // Update UI based on user's plan
+    function updateUIForPlan() {
+        if (userPlan === 'premium') {
+            upgradeButtonContainer.classList.add('hidden');
+            premiumStatus.classList.remove('hidden');
+            freePlanCard.style.borderColor = "#9ca3af"; // A more neutral gray
+            premiumPlanCard.style.borderColor = "#22c55e"; // A green border to show it's active
+            limitStatus.textContent = "Unlimited entries.";
+            journalEntryInput.placeholder = "Write a short journal entry...";
+        } else {
+            upgradeButtonContainer.classList.remove('hidden');
+            premiumStatus.classList.add('hidden');
+            premiumPlanCard.style.borderColor = "#3730a3";
+            freePlanCard.style.borderColor = "#22c55e";
+            limitStatus.textContent = "Free plan: 5 daily entries.";
+        }
+    }
+
+    // Save entry to Firestore with daily limit check for free users
+    saveButton.addEventListener('click', async () => {
+        const entryText = journalEntryInput.value.trim();
+        if (entryText === "" || !selectedMood) {
+            journalEntryInput.placeholder = "Please select a mood and write an entry!";
+            setTimeout(() => journalEntryInput.placeholder = "Write a short journal entry...", 2000);
+            return;
+        }
+
+        // Check daily entry count for free users
+        if (userPlan === 'free') {
+            const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+            const todayEntries = [];
+            entriesList.querySelectorAll('.entry-date').forEach(dateElem => {
+                if (dateElem.textContent.includes(today)) {
+                    todayEntries.push(dateElem);
+                }
+            });
+
+            if (todayEntries.length >= 5) {
+                limitStatus.textContent = "Daily entry limit reached. Upgrade to premium for unlimited entries!";
+                journalEntryInput.value = "";
+                return;
+            }
+        }
+        
+        try {
+            await addDoc(collection(db, `/artifacts/${appId}/users/${userId}/entries`), {
+                mood: selectedMood,
+                content: entryText,
+                createdAt: serverTimestamp()
+            });
+            console.log("Document successfully written!");
+            journalEntryInput.value = ""; // Clear input after saving
+            selectedMood = null; // Clear selected mood
+            moodButtons.forEach(btn => btn.classList.remove('selected'));
+            limitStatus.textContent = ""; // Clear any limit message
+        } catch (error) {
+            console.error("Error adding document: ", error);
+        }
+    });
+
+    // Simulate payment and upgrade user plan
+    upgradeButton.addEventListener('click', async () => {
+        try {
+            const userDocRef = doc(db, `/artifacts/${appId}/users/${userId}`);
+            await setDoc(userDocRef, { plan: 'premium' }, { merge: true });
+            messageBox.classList.remove('hidden');
+            console.log("User plan updated to premium!");
+        } catch (error) {
+            console.error("Error upgrading plan:", error);
+        }
+    });
+
+    // Close the message box
+    closeButton.addEventListener('click', () => {
+        messageBox.classList.add('hidden');
+    });
+
+});
+    </script>
+</body>
+</html>

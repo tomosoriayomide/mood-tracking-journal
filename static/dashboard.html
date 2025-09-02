@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mood Tracker Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="dashboard-container">
+    <header>
+      <h1>How are you feeling today?</h1>
+      <button id="logout-button">Logout</button>
+    </header>
+
+    <main>
+      <section class="mood-input-card">
+        <form id="mood-form">
+          <div class="mood-options">
+            <label><input type="radio" name="mood" value="Happy" required /><span class="mood-icon">😊</span><span class="mood-text">Happy</span></label>
+            <label><input type="radio" name="mood" value="Calm" /><span class="mood-icon">😌</span><span class="mood-text">Calm</span></label>
+            <label><input type="radio" name="mood" value="Neutral" /><span class="mood-icon">😐</span><span class="mood-text">Neutral</span></label>
+            <label><input type="radio" name="mood" value="Sad"  /><span class="mood-icon"  >😔</span><span class="mood-text">Sad</span></label>
+            <label><input type="radio" name="mood" value="Angry" /><span class="mood-icon">😡</span><span class="mood-text">Angry</span></label>
+          </div>
+          <textarea id="journal-entry" placeholder="Write a short journal entry..." rows="4"></textarea>
+          <button type="submit" id="submit-mood">Log Mood</button>
+        </form>
+    </section>
+    
+    <section class="mood-history-card">
+        <h2>Your Mood History</h2>
+        <div id="mood-history-list"></div>
+        <div id="no-entries-message" class="hidden">
+          <p>No mood entries yet. Log your first one!</p>
+        </div>
+      </section>
+
+      <section class="mood-chart-card">
+          <h2>Mood Trends</h2>
+          <canvas id="moodChart" width="400" height="200"></canvas>
+        </section>
+    </main>
+    <div class="card-premium">
+        <p>Upgrade to premium for more features! such as:</p>
+        <ul>
+            <li>Advanced mood analytics</li>
+            <li>Unlimited mood journal entries</li>
+            <li>Priority support</li>
+        </ul>
+        <button id="upgrade-button">Upgrade to Premium</button>
+    </div>
+  </div>
+  <script src="dashboard.js"></script>
+</body>
+</html>
